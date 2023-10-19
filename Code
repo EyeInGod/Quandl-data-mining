@@ -38,16 +38,16 @@ county_df = pd.DataFrame(county_code_clean, columns = ["Code","State", "County"]
 
 # Use a for loop to retrieve data from quandl, specifically in January of 2018.
 # A try/expect block is used within the for loop to skip counties which have no available data.
-df2018_compiled = pd.DataFrame(columns=["Value", "Code"])
+df2023_compiled = pd.DataFrame(columns=["Value", "Code"])
 for row in county_df.itertuples():
     code = row.Code
     try:
-        df2018 = quandl.get("ZILLOW/C"+str(code)+"_ZHVICO", start_date='2018-01-01', end_date ='2018-02-01')
+        df2023 = quandl.get("ZILLOW/C"+str(code)+"_ZHVICO", start_date='2023-01-01', end_date ='2023-10-01')
     except (SyntaxError, NotFoundError):
         continue 
     else:
-        df2018['Code'] = code
-        df2018_compiled = df2018_compiled.append(df2018)
+        df2023['Code'] = code
+        df2023_compiled = df2023_compiled.append(df2023)
 # In the same manner, retrieve data from January 2013.       
 df2013_compiled = pd.DataFrame(columns=["Value", "Code"])
 for each in county_code_clean:
@@ -62,6 +62,6 @@ for each in county_code_clean:
  
 # Join the three resulting dataframes:
 df2013_compiled = df2013_compiled.rename(columns= {"Value": "Value_2013", "Code": "Code"})
-df2018_compiled = df2018_compiled.rename(columns= {"Value": "Value_2018", "Code": "Code"})
-df2018_13 = df2018_compiled.set_index('Code').join(df2013_compiled.set_index('Code'))
-county_values_df = county_df.set_index('Code').join(df2018_13)
+df2023_compiled = df2023_compiled.rename(columns= {"Value": "Value_2018", "Code": "Code"})
+df2023_13 = df2023_compiled.set_index('Code').join(df2013_compiled.set_index('Code'))
+county_values_df = county_df.set_index('Code').join(df2023_13)
